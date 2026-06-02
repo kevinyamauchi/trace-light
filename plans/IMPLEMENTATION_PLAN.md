@@ -47,6 +47,50 @@ run the kernel on both backends with shared input and assert
   reproduces it from the clone, so a reviewer can regenerate and diff.
 - `schema_version` is recorded in any serialized artifact from day one.
 
+### 0.3a Code style: docstrings and imports
+
+These two conventions apply to every function and module in `src/`, including private
+helpers.  They were retrofitted onto Phases 0–1 and must be followed in all future
+phases.
+
+**Docstrings — NumPy style, always complete.**
+
+Every function (public or private, including inner closures such as `vmapped`) must
+have a NumPy-style docstring with, at minimum:
+
+- A one-line summary.
+- A `Parameters` section listing every argument with its type and a short description.
+- A `Returns` section (or a `Raises` section for functions that always raise).
+
+Stub functions whose API is not yet defined use `*args: Any, **kwargs: Any`; their
+`Parameters` section documents both as `Any` with a note that the signature is pending,
+and their `Raises` section cites `NotImplementedError`.
+
+**Type annotations — all arguments and return values.**
+
+Every function signature must carry type annotations on every argument and the return.
+The type conventions in use:
+
+| Context | Type to use |
+|---------|-------------|
+| Backend-agnostic array (kernel inputs/outputs) | `Any` (from `typing`) |
+| NumPy-specific array | `np.ndarray` |
+| JAX array | `Any` (JAX types require a runtime import) |
+| Callable passed to `jit`/`vmap`/`grad` | `Callable[..., Any]` (under `TYPE_CHECKING`) |
+| Shape arguments | `int \| tuple[int, ...]` |
+| Optional dtype | `Any` (covers NumPy and JAX dtype objects) |
+
+`Callable` is imported under `TYPE_CHECKING` to keep it off the runtime import path
+(matches the lazy-`jax` discipline in §0.1).
+
+**Imports — absolute only.**
+
+All intra-package imports use absolute paths (`from trace_light.backends._protocol
+import Backend`, not `from ._protocol import Backend`).  The sole exception is a
+deferred `import` statement inside a function body used to avoid a circular import or
+to keep an optional dependency off the load path; that import may remain bare
+(`import jax`) but must not use the relative-dot form.
+
 ### 0.4 Test harness (built in Phase 0, used everywhere)
 
 Three fixtures in `tests/conftest.py` — **conftest is fixtures only; no helpers are

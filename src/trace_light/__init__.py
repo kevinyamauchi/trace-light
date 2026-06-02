@@ -11,12 +11,31 @@ __email__ = "kevin.yamauchi@gmail.com"
 
 from trace_light import backends
 from trace_light.kernels import _trace_surfaces
-from trace_light.rays import Rays, _Params, _Structure
+from trace_light.rays import (
+    Rays,
+    Surface,
+    System,
+    _Params,
+    _Structure,
+    load_system,
+    save_system,
+)
+from trace_light.sources import Source, collimated_source, emit, point_source
+from trace_light.systems import SystemBuilder
 
 __all__ = [
     "Rays",
+    "Source",
+    "Surface",
+    "System",
+    "SystemBuilder",
     "_Params",
     "_Structure",
     "_trace_surfaces",
     "backends",
+    "collimated_source",
+    "emit",
+    "load_system",
+    "point_source",
+    "save_system",
 ]
