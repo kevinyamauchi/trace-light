@@ -1,3 +1,7 @@
+# The hexapolar pupil sampling pattern in this module is derived from Optiland
+# (https://github.com/optiland/optiland), copyright (c) 2024 Kramer Harrison,
+# licensed under the MIT License. See NOTICE and licenses/optiland_license.txt.
+
 """Ray sources, pupil sampling patterns, and the ``emit`` function.
 
 Phase 3: :class:`Source` NamedTuple, factory functions

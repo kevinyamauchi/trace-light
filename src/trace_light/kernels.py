@@ -1,3 +1,7 @@
+# Portions of this module are derived from Optiland
+# (https://github.com/optiland/optiland), copyright (c) 2024 Kramer Harrison,
+# licensed under the MIT License. See NOTICE and licenses/optiland_license.txt.
+
 """Pure functional ray-tracing kernels.
 
 Every function is stateless and backend-agnostic: the caller passes an
@@ -7,7 +11,9 @@ mutation.  Ported from Optiland's ``StandardGeometry`` and ``RealRays``.
 References
 ----------
 * ``_intersect`` ← ``optiland/geometries/standard.py::StandardGeometry.distance``
+                   ``optiland/geometries/plane.py::Plane.distance``
 * ``_normal``    ← ``optiland/geometries/standard.py::StandardGeometry.surface_normal``
+                   ``optiland/geometries/plane.py::Plane.surface_normal``
 * ``_refract``   ← ``optiland/rays/real_rays.py::RealRays.refract``
 * ``_reflect``   ← ``optiland/rays/real_rays.py::RealRays.reflect``
 """
