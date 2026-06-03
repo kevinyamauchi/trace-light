@@ -20,7 +20,8 @@ dynamic = ["version"]
 description = "a light raytracing library"
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "BSD-3-Clause" }
+license = "BSD-3-Clause"
+license-files = ["LICENSE", "NOTICE", "licenses/*.txt"]
 authors = [{ name = "Kevin Yamauchi", email = "kevin.yamauchi@gmail.com" }]
 # https://pypi.org/classifiers/
 classifiers = [
@@ -34,12 +35,17 @@ classifiers = [
     "Typing :: Typed",
 ]
 # add your package dependencies here
-dependencies = []
+dependencies = [
+    "anywidget>=0.11.0",
+    "marimo>=0.23.8",
+    "matplotlib>=3.10.9",
+    "numpy>=2.4.6",
+    "scipy>=1.17.1",
+]
 
 # https://peps.python.org/pep-0621/#dependencies-optional-dependencies
-# add dependencies for "extra" features here.  Not dev dependencies.
-# [project.optional-dependencies]
-# name = ["dependency"]
+[project.optional-dependencies]
+jax = ["jax>=0.4.0", "jaxlib>=0.4.0"]
 
 [project.urls]
 homepage = "https://github.com/kevinyamauchi/trace-light"
@@ -57,14 +63,17 @@ repository = "https://github.com/kevinyamauchi/trace-light"
 # https://peps.python.org/pep-0735/
 # setup with `uv sync` or `pip install -e . --group dev`
 [dependency-groups]
-test = ["pytest", "pytest-cov"]
+test = ["pytest>=9.0.3", "pytest-cov>=7.1.0"]
 dev = [
     { include-group = "test" },
-    "ipython",
-    "pdbpp",  # https://github.com/pdbpp/pdbpp
-    "pre-commit-uv",
-    "rich",  # https://github.com/Textualize/rich
-    "ruff",
+    "build>=1.5.0",
+    "hatch-vcs>=0.5.0",
+    "hatchling>=1.30.1",
+    "ipython>=9.14.0",
+    "pdbpp>=0.12.1",  # https://github.com/pdbpp/pdbpp
+    "pre-commit-uv>=4.2.1",
+    "rich>=15.0.0",  # https://github.com/Textualize/rich
+    "ruff>=0.15.15",
 ]
 
 [tool.uv.sources]
@@ -139,3 +148,8 @@ ignore = [
 # https://github.com/crate-ci/typos/blob/master/docs/reference.md
 [tool.typos.default]
 extend-ignore-identifiers-re = []
+
+# Image-array index names (row=iy, col=ix) — not typos of "it"/"is".
+[tool.typos.default.extend-words]
+iy = "iy"
+ix = "ix"
