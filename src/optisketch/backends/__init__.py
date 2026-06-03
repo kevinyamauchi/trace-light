@@ -2,7 +2,7 @@
 
 Usage::
 
-    from trace_light.backends import numpy, jax
+    from optisketch.backends import numpy, jax
 
     be = numpy()
     be_jax = jax()  # raises ImportError if jax is not installed
@@ -10,8 +10,8 @@ Usage::
 
 from __future__ import annotations
 
-from trace_light.backends._numpy import NumpyBackend
-from trace_light.backends._protocol import Backend, NotDifferentiable
+from optisketch.backends._numpy import NumpyBackend
+from optisketch.backends._protocol import Backend, NotDifferentiable
 
 
 def numpy() -> NumpyBackend:
@@ -24,7 +24,7 @@ def jax():
 
     Raises :exc:`ImportError` if jax is not installed.
     """
-    from trace_light.backends._jax import JaxBackend
+    from optisketch.backends._jax import JaxBackend
 
     return JaxBackend()
 

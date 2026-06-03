@@ -12,10 +12,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Rectangle
 
-from trace_light.analysis.spot import spot
-from trace_light.kernels import _propagate_to_plane, _trace_surfaces
-from trace_light.sources import emit, point_source
-from trace_light.systems import four_f
+from optisketch.analysis.spot import spot
+from optisketch.kernels import _propagate_to_plane, _trace_surfaces
+from optisketch.sources import emit, point_source
+from optisketch.systems import four_f
 
 # ---------------------------------------------------------------------------
 # System parameters
@@ -176,5 +176,5 @@ fig.suptitle(
     fontsize=10,
 )
 plt.tight_layout()
-plt.savefig("examples/4f_raytrace.png", dpi=150, bbox_inches="tight")
+plt.savefig("4f_raytrace.png", dpi=150, bbox_inches="tight")
 plt.show()

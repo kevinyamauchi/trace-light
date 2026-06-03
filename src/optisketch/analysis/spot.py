@@ -1,6 +1,6 @@
 """Spot-diagram statistics for a traced ray bundle (Phase 4).
 
-:func:`spot` reduces a :class:`~trace_light.rays.Rays` bundle to centroid,
+:func:`spot` reduces a :class:`~optisketch.rays.Rays` bundle to centroid,
 RMS, and geometric-radius statistics over the valid rays. All reductions are
 NaN-safe: invalid rays are masked out via ``backend.where`` before any sum or
 maximum, so a NaN in a missed/TIR ray never corrupts the result.
@@ -11,8 +11,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, NamedTuple
 
 if TYPE_CHECKING:
-    from trace_light.backends._protocol import Backend
-    from trace_light.rays import Rays
+    from optisketch.backends._protocol import Backend
+    from optisketch.rays import Rays
 
 
 class SpotStats(NamedTuple):
@@ -45,9 +45,9 @@ def _default_backend() -> Backend:
     Returns
     -------
     Backend
-        A fresh :class:`~trace_light.backends.NumpyBackend`.
+        A fresh :class:`~optisketch.backends.NumpyBackend`.
     """
-    from trace_light.backends._numpy import NumpyBackend
+    from optisketch.backends._numpy import NumpyBackend
 
     return NumpyBackend()
 
@@ -74,7 +74,7 @@ def spot(
         for the RMS and geometric-radius statistics.
     backend : Backend, optional
         Array-computation backend. Defaults to
-        :class:`~trace_light.backends.NumpyBackend`.
+        :class:`~optisketch.backends.NumpyBackend`.
 
     Returns
     -------

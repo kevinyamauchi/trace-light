@@ -221,7 +221,7 @@ class System(NamedTuple):
             Dictionary as returned by :meth:`to_dict` or parsed from a JSON
             file written by :func:`save_system`.
         backend : Backend, optional
-            Backend to bind.  Defaults to :class:`~trace_light.backends.NumpyBackend`.
+            Backend to bind.  Defaults to :class:`~optisketch.backends.NumpyBackend`.
 
         Returns
         -------
@@ -229,7 +229,7 @@ class System(NamedTuple):
             Reconstructed system ready for ray tracing.
         """
         if backend is None:
-            from trace_light.backends._numpy import NumpyBackend
+            from optisketch.backends._numpy import NumpyBackend
 
             backend = NumpyBackend()
 
@@ -305,7 +305,7 @@ def load_system(
         Path to the JSON file.
     backend : Backend, optional
         Backend to bind to the loaded system.  Defaults to
-        :class:`~trace_light.backends.NumpyBackend`.
+        :class:`~optisketch.backends.NumpyBackend`.
 
     Returns
     -------

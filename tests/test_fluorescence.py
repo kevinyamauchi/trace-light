@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from trace_light.fluorescence import emission_volume, widefield
-from trace_light.systems import four_f
+from optisketch.fluorescence import emission_volume, widefield
+from optisketch.systems import four_f
 
 
 def _blob(ny=24, nx=24):

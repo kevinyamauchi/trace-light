@@ -9,9 +9,9 @@ except PackageNotFoundError:
 __author__ = "Kevin Yamauchi"
 __email__ = "kevin.yamauchi@gmail.com"
 
-from trace_light import analysis, backends, fluorescence, optimize, viz
-from trace_light.kernels import _trace_surfaces, trace
-from trace_light.rays import (
+from optisketch import analysis, backends, fluorescence, optimize, viz
+from optisketch.kernels import _trace_surfaces, trace
+from optisketch.rays import (
     Rays,
     Surface,
     System,
@@ -20,8 +20,8 @@ from trace_light.rays import (
     load_system,
     save_system,
 )
-from trace_light.sources import Source, collimated_source, emit, point_source
-from trace_light.systems import SystemBuilder
+from optisketch.sources import Source, collimated_source, emit, point_source
+from optisketch.systems import SystemBuilder
 
 __all__ = [
     "Rays",

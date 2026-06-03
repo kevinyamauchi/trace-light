@@ -22,12 +22,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from trace_light.rays import Rays, _Params, _Structure
+from optisketch.rays import Rays, _Params, _Structure
 
 if TYPE_CHECKING:
-    from trace_light.backends._protocol import Backend
-    from trace_light.rays import System
-    from trace_light.sources import Source
+    from optisketch.backends._protocol import Backend
+    from optisketch.rays import System
+    from optisketch.sources import Source
 
 
 # ---------------------------------------------------------------------------
@@ -587,7 +587,7 @@ def trace(
     """Emit *source* into *system* and trace it through every surface.
 
     This is the public, forward-only trace entry point of DESIGN §10. It
-    composes :func:`~trace_light.sources.emit` with :func:`_trace_surfaces`,
+    composes :func:`~optisketch.sources.emit` with :func:`_trace_surfaces`,
     using the backend bound to *system* unless overridden.
 
     Parameters
@@ -608,7 +608,7 @@ def trace(
         Per-surface position history of length ``n_surfaces + 1``; each entry
         is an ``(n_rays, 3)`` array of ``[x, y, z]`` coordinates.
     """
-    from trace_light.sources import emit
+    from optisketch.sources import emit
 
     if backend is not None:
         system = system._replace(backend=backend)

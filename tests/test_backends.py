@@ -12,7 +12,7 @@ import math
 import numpy as np
 import pytest
 
-from trace_light.backends import NotDifferentiable, NumpyBackend
+from optisketch.backends import NotDifferentiable, NumpyBackend
 
 # ---------------------------------------------------------------------------
 # §2.1  Op parity & correctness
@@ -238,16 +238,16 @@ def test_jax_vmap_matches_loop(jax_backend):
 
 
 def test_import_without_jax(monkeypatch):
-    """``import trace_light`` must not import jax at module level."""
+    """``import optisketch`` must not import jax at module level."""
     import importlib
     import sys
 
     monkeypatch.setitem(sys.modules, "jax", None)
     monkeypatch.setitem(sys.modules, "jax.numpy", None)
 
-    import trace_light
+    import optisketch
 
-    importlib.reload(trace_light)
+    importlib.reload(optisketch)
 
 
 # ---------------------------------------------------------------------------
@@ -267,10 +267,10 @@ def test_recompile_only_on_structure(jax_backend):
 
     import jax
 
-    from trace_light.kernels import _trace_surfaces
-    from trace_light.lenses import biconvex
-    from trace_light.sources import emit, point_source
-    from trace_light.systems import SystemBuilder, four_f
+    from optisketch.kernels import _trace_surfaces
+    from optisketch.lenses import biconvex
+    from optisketch.sources import emit, point_source
+    from optisketch.systems import SystemBuilder, four_f
 
     be = jax_backend
 

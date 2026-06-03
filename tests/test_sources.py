@@ -10,9 +10,9 @@ import math
 
 import numpy as np
 
-from trace_light.backends import NumpyBackend
-from trace_light.kernels import _trace_surfaces
-from trace_light.sources import (
+from optisketch.backends import NumpyBackend
+from optisketch.kernels import _trace_surfaces
+from optisketch.sources import (
     Source,
     _pupil_disk,
     _pupil_hex,
@@ -21,7 +21,7 @@ from trace_light.sources import (
     emit,
     point_source,
 )
-from trace_light.systems import four_f
+from optisketch.systems import four_f
 
 # ---------------------------------------------------------------------------
 # Assertion helpers

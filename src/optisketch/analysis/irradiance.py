@@ -1,21 +1,21 @@
 """Irradiance (flux density) estimation at a detector plane (Phase 4).
 
-:func:`irradiance` traces a :class:`~trace_light.sources.Source` through a
+:func:`irradiance` traces a :class:`~optisketch.sources.Source` through a
 system, propagates the exiting rays to a target plane, and accumulates a
 weighted 2-D histogram of the valid hits. It is a thin wrapper over
-:func:`~trace_light.kernels._trace_surfaces` and the backend ``histogram2d``.
+:func:`~optisketch.kernels._trace_surfaces` and the backend ``histogram2d``.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from trace_light.kernels import _propagate_to_plane, _trace_surfaces
-from trace_light.sources import emit
+from optisketch.kernels import _propagate_to_plane, _trace_surfaces
+from optisketch.sources import emit
 
 if TYPE_CHECKING:
-    from trace_light.rays import System
-    from trace_light.sources import Source
+    from optisketch.rays import System
+    from optisketch.sources import Source
 
 
 def irradiance(

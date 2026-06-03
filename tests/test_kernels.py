@@ -16,15 +16,15 @@ import math
 
 import numpy as np
 
-from trace_light.backends import NumpyBackend
-from trace_light.kernels import (
+from optisketch.backends import NumpyBackend
+from optisketch.kernels import (
     _intersect,
     _normal,
     _reflect,
     _refract,
     _trace_surfaces,
 )
-from trace_light.rays import Rays, _Params, _Structure
+from optisketch.rays import Rays, _Params, _Structure
 
 # ---------------------------------------------------------------------------
 # Assertion helpers (TEST_PLAN tolerance tiers)

@@ -8,10 +8,10 @@
 
 from __future__ import annotations
 
-from trace_light.analysis.image_sim import image_sim
-from trace_light.analysis.irradiance import irradiance
-from trace_light.analysis.psf import psf
-from trace_light.analysis.spot import SpotStats, spot
+from optisketch.analysis.image_sim import image_sim
+from optisketch.analysis.irradiance import irradiance
+from optisketch.analysis.psf import psf
+from optisketch.analysis.spot import SpotStats, spot
 
 __all__ = [
     "SpotStats",

@@ -8,12 +8,12 @@ from __future__ import annotations
 
 import numpy as np
 
-from trace_light import trace
-from trace_light.backends import NumpyBackend
-from trace_light.kernels import _propagate_to_plane, _trace_surfaces
-from trace_light.optimize import minimize
-from trace_light.sources import emit, point_source
-from trace_light.systems import four_f
+from optisketch import trace
+from optisketch.backends import NumpyBackend
+from optisketch.kernels import _propagate_to_plane, _trace_surfaces
+from optisketch.optimize import minimize
+from optisketch.sources import emit, point_source
+from optisketch.systems import four_f
 
 
 def _ac(a, b, rtol, atol, be=None):
@@ -53,7 +53,7 @@ def test_trace_backend_override():
     import pytest
 
     pytest.importorskip("jax")
-    from trace_light.backends import jax as make_jax
+    from optisketch.backends import jax as make_jax
 
     be_np = NumpyBackend()
     be_jax = make_jax()

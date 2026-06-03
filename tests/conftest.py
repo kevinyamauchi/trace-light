@@ -1,4 +1,4 @@
-"""Pytest fixtures for the trace_light test suite.
+"""Pytest fixtures for the optisketch test suite.
 
 Backend fixtures
 ----------------
@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pytest
 
-from trace_light.backends import NumpyBackend
+from optisketch.backends import NumpyBackend
 
 
 @pytest.fixture
@@ -24,7 +24,7 @@ def numpy_backend():
 def jax_backend():
     """Return a JaxBackend instance; skip if jax is not installed."""
     pytest.importorskip("jax", reason="jax not installed")
-    from trace_light.backends import jax as make_jax
+    from optisketch.backends import jax as make_jax
 
     return make_jax()
 
@@ -35,6 +35,6 @@ def backend(request):
     if request.param == "numpy":
         return NumpyBackend()
     pytest.importorskip("jax", reason="jax not installed")
-    from trace_light.backends import jax as make_jax
+    from optisketch.backends import jax as make_jax
 
     return make_jax()

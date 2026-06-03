@@ -12,12 +12,12 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from trace_light.kernels import _trace_surfaces
-from trace_light.sources import emit
+from optisketch.kernels import _trace_surfaces
+from optisketch.sources import emit
 
 if TYPE_CHECKING:
-    from trace_light.rays import System
-    from trace_light.sources import Source
+    from optisketch.rays import System
+    from optisketch.sources import Source
 
 
 def layout(system: System, source: Source, dim: int = 2) -> Any:

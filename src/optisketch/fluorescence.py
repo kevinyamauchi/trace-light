@@ -4,12 +4,12 @@ This module adds **no new core ray-tracing code**. It documents and wraps the
 two-pass fluorescence pipeline of DESIGN §9 as a thin composition:
 
 1. *Excitation* (optional): an excitation irradiance ``I_exc`` over the sample
-   volume, from :func:`~trace_light.analysis.irradiance` or a uniform constant
+   volume, from :func:`~optisketch.analysis.irradiance` or a uniform constant
    for widefield/Köhler illumination.
 2. *Emission volume*: the incoherent source ``emission = I_exc * fluorophore``
    (one-photon) or ``I_exc**2 * fluorophore`` (two-photon).
 3. *Collection*: imaging of ``emission`` at the **emission** wavelength via
-   :func:`~trace_light.analysis.image_sim`.
+   :func:`~optisketch.analysis.image_sim`.
 
 The §9.4 modality table (widefield / confocal / two-photon / light-sheet / 3-D)
 is realised as excitation-side variations layered on this same pipeline.
@@ -19,10 +19,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from trace_light.analysis.image_sim import image_sim
+from optisketch.analysis.image_sim import image_sim
 
 if TYPE_CHECKING:
-    from trace_light.rays import System
+    from optisketch.rays import System
 
 
 def emission_volume(
@@ -88,7 +88,7 @@ def widefield(
     wavelength_em : float, optional
         Emission wavelength (µm). Defaults to the system's first wavelength.
     psf : str, optional
-        PSF mode forwarded to :func:`~trace_light.analysis.image_sim`.
+        PSF mode forwarded to :func:`~optisketch.analysis.image_sim`.
     grid : tuple of int, optional
         Coarse field grid for the varying PSF.
     psf_grid : tuple of int, optional

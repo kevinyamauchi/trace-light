@@ -1,11 +1,11 @@
 """Point-spread-function estimation by geometric ray histogramming (Phase 4).
 
-:func:`psf` traces a point emitter through a :class:`~trace_light.rays.System`,
+:func:`psf` traces a point emitter through a :class:`~optisketch.rays.System`,
 propagates the exiting rays to a (possibly defocused) detector plane, and
 histograms the valid image-plane hits into a normalised 2-D kernel centred on
 the spot centroid. Because the kernel is centred on the centroid, the result is
 a shift-invariant impulse response suitable for convolution in
-:func:`~trace_light.analysis.image_sim.image_sim`.
+:func:`~optisketch.analysis.image_sim.image_sim`.
 
 Sweeping ``depth`` (object-side axial position) or ``focus`` (detector-side
 axial position) produces a through-focus stack.
@@ -15,11 +15,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from trace_light.kernels import _propagate_to_plane, _trace_surfaces
-from trace_light.sources import emit, point_source
+from optisketch.kernels import _propagate_to_plane, _trace_surfaces
+from optisketch.sources import emit, point_source
 
 if TYPE_CHECKING:
-    from trace_light.rays import System
+    from optisketch.rays import System
 
 
 def _masked_centroid(xs: Any, ys: Any, valid: Any, be: Any) -> tuple[float, float, int]:
