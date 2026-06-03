@@ -7,12 +7,12 @@ from __future__ import annotations
 
 import numpy as np
 
-from trace_light.analysis import irradiance, psf, spot
-from trace_light.backends import NumpyBackend
-from trace_light.kernels import _propagate_to_plane, _trace_surfaces
-from trace_light.rays import Rays
-from trace_light.sources import collimated_source, point_source
-from trace_light.systems import four_f
+from optisketch.analysis import irradiance, psf, spot
+from optisketch.backends import NumpyBackend
+from optisketch.kernels import _propagate_to_plane, _trace_surfaces
+from optisketch.rays import Rays
+from optisketch.sources import collimated_source, point_source
+from optisketch.systems import four_f
 
 # ---------------------------------------------------------------------------
 # Assertion helpers (inline, per §0.4)
@@ -51,7 +51,7 @@ def _traced_to_image(system, src):
 
 def emit_and_trace(system, src):
     """Emit *src* and trace it through every surface of *system*."""
-    from trace_light.sources import emit
+    from optisketch.sources import emit
 
     be = system.backend
     rays = emit(src, system)

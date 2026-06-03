@@ -11,11 +11,11 @@ from pathlib import Path
 
 import numpy as np
 
-from trace_light.backends import NumpyBackend
-from trace_light.kernels import _trace_surfaces
-from trace_light.lenses import biconvex, singlet
-from trace_light.rays import Rays, load_system, save_system
-from trace_light.systems import SystemBuilder, four_f, microscope, telescope
+from optisketch.backends import NumpyBackend
+from optisketch.kernels import _trace_surfaces
+from optisketch.lenses import biconvex, singlet
+from optisketch.rays import Rays, load_system, save_system
+from optisketch.systems import SystemBuilder, four_f, microscope, telescope
 
 # ---------------------------------------------------------------------------
 # Assertion helpers

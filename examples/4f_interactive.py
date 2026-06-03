@@ -41,11 +41,11 @@ def _():
     import traitlets
     from matplotlib.patches import Rectangle
 
-    from trace_light.analysis.spot import spot as compute_spot
-    from trace_light.kernels import _propagate_to_plane as propagate_to_plane
-    from trace_light.kernels import _trace_surfaces as trace_surfaces
-    from trace_light.sources import emit, point_source
-    from trace_light.systems import four_f
+    from optisketch.analysis.spot import spot as compute_spot
+    from optisketch.kernels import _propagate_to_plane as propagate_to_plane
+    from optisketch.kernels import _trace_surfaces as trace_surfaces
+    from optisketch.sources import emit, point_source
+    from optisketch.systems import four_f
 
     return (
         Rectangle,

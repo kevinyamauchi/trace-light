@@ -7,9 +7,9 @@ from __future__ import annotations
 
 import numpy as np
 
-from trace_light.analysis import image_sim
-from trace_light.backends import NumpyBackend
-from trace_light.systems import four_f
+from optisketch.analysis import image_sim
+from optisketch.backends import NumpyBackend
+from optisketch.systems import four_f
 
 # ---------------------------------------------------------------------------
 # Assertion helpers

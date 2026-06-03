@@ -17,8 +17,8 @@ from typing import TYPE_CHECKING, Any, NamedTuple
 import numpy as np
 
 if TYPE_CHECKING:
-    from trace_light.backends._protocol import Backend
-    from trace_light.rays import Rays, System
+    from optisketch.backends._protocol import Backend
+    from optisketch.rays import Rays, System
 
 
 # ---------------------------------------------------------------------------
@@ -362,7 +362,7 @@ def _sample_pupil(
 
 
 def emit(source: Source, system: System) -> Rays:
-    """Convert *source* into a :class:`~trace_light.rays.Rays` bundle.
+    """Convert *source* into a :class:`~optisketch.rays.Rays` bundle.
 
     Pupil sampling is computed once in NumPy (static); direction arithmetic
     uses the system backend so that ``vmap(emit)`` over the ``field`` leaf is
@@ -380,14 +380,14 @@ def emit(source: Source, system: System) -> Rays:
     -------
     Rays
         Initial ray bundle placed at the entrance pupil, ready to pass to
-        :func:`~trace_light.kernels._trace_surfaces`.
+        :func:`~optisketch.kernels._trace_surfaces`.
 
     Raises
     ------
     ValueError
         If ``source.kind`` is not ``"point"`` or ``"collimated"``.
     """
-    from trace_light.rays import Rays
+    from optisketch.rays import Rays
 
     be: Backend = system.backend
     pupil_z = float(system.pupil_z)

@@ -7,8 +7,8 @@ Two routines are provided:
 * :func:`minimize` — general gradient-descent optimisation of a chosen traced
   parameter field (radii, conics, indices) against a user objective.
 
-Both require a differentiable backend (:class:`~trace_light.backends.JaxBackend`).
-On the NumPy backend they raise :exc:`~trace_light.backends.NotDifferentiable`,
+Both require a differentiable backend (:class:`~optisketch.backends.JaxBackend`).
+On the NumPy backend they raise :exc:`~optisketch.backends.NotDifferentiable`,
 consistent with ``backend.is_differentiable == False``.
 
 .. note::
@@ -24,15 +24,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from trace_light.backends._protocol import NotDifferentiable
-from trace_light.kernels import _propagate_to_plane, _trace_surfaces
-from trace_light.sources import emit, point_source
+from optisketch.backends._protocol import NotDifferentiable
+from optisketch.kernels import _propagate_to_plane, _trace_surfaces
+from optisketch.sources import emit, point_source
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from trace_light.rays import System
-    from trace_light.sources import Source
+    from optisketch.rays import System
+    from optisketch.sources import Source
 
 
 def _spot_variance(rays: Any, be: Any) -> Any:

@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import math
 
-from trace_light.rays import Surface
+from optisketch.rays import Surface
 
 
 def singlet(

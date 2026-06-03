@@ -1,7 +1,7 @@
 """SystemBuilder and prefab optical systems.
 
-:class:`SystemBuilder` assembles :class:`~trace_light.rays.Surface` objects
-into a :class:`~trace_light.rays.System`.  The ``systems.*`` prefabs wrap the
+:class:`SystemBuilder` assembles :class:`~optisketch.rays.Surface` objects
+into a :class:`~optisketch.rays.System`.  The ``systems.*`` prefabs wrap the
 builder to create common configurations.
 """
 
@@ -12,15 +12,15 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from trace_light.rays import Surface, System, _Params, _Structure
+from optisketch.rays import Surface, System, _Params, _Structure
 
 if TYPE_CHECKING:
-    from trace_light.backends._protocol import Backend
+    from optisketch.backends._protocol import Backend
 
 
 def _default_backend() -> Backend:
     """Return a NumpyBackend instance (avoids import at module level)."""
-    from trace_light.backends._numpy import NumpyBackend
+    from optisketch.backends._numpy import NumpyBackend
 
     return NumpyBackend()
 
@@ -156,7 +156,7 @@ class SystemBuilder:
         Parameters
         ----------
         backend : Backend, optional
-            Backend to bind.  Defaults to :class:`~trace_light.backends.NumpyBackend`.
+            Backend to bind.  Defaults to :class:`~optisketch.backends.NumpyBackend`.
 
         Returns
         -------
@@ -267,7 +267,7 @@ def four_f(
     System
         4-f relay system.
     """
-    from trace_light.lenses import biconvex
+    from optisketch.lenses import biconvex
 
     b = SystemBuilder(wavelengths=wavelengths)
     b.add(*biconvex(R=f1, n=n, thickness=thickness))
@@ -325,7 +325,7 @@ def microscope(
     System
         Infinity-corrected microscope system.
     """
-    from trace_light.lenses import biconvex
+    from optisketch.lenses import biconvex
 
     b = SystemBuilder(wavelengths=wavelengths)
     b.add(*biconvex(R=f_obj, n=n_obj, thickness=thickness_obj))
@@ -372,7 +372,7 @@ def relay(
     System
         Relay lens system.
     """
-    from trace_light.lenses import biconvex
+    from optisketch.lenses import biconvex
 
     b = SystemBuilder(wavelengths=wavelengths)
     for i in range(n_lenses):
@@ -423,7 +423,7 @@ def telescope(
     System
         Afocal Keplerian telescope.
     """
-    from trace_light.lenses import biconvex
+    from optisketch.lenses import biconvex
 
     b = SystemBuilder(wavelengths=wavelengths)
     b.add(*biconvex(R=f_obj, n=n, thickness=thickness))

@@ -11,11 +11,11 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from trace_light.backends._protocol import NotDifferentiable
-from trace_light.kernels import _propagate_to_plane, _trace_surfaces
-from trace_light.optimize import best_focus, minimize
-from trace_light.sources import emit, point_source
-from trace_light.systems import four_f
+from optisketch.backends._protocol import NotDifferentiable
+from optisketch.kernels import _propagate_to_plane, _trace_surfaces
+from optisketch.optimize import best_focus, minimize
+from optisketch.sources import emit, point_source
+from optisketch.systems import four_f
 
 
 def _rms_at(system, z, *, n_samples=64):
@@ -81,7 +81,7 @@ def test_grad_vs_finite_diff(jax_backend):
 
     import jax
 
-    from trace_light.optimize import _spot_variance
+    from optisketch.optimize import _spot_variance
 
     def obj(z):
         return _spot_variance(_propagate_to_plane(traced, z, be), be)
@@ -105,7 +105,7 @@ def test_optimize_no_nan(jax_backend):
         # minimise on-axis spot variance at the image plane w.r.t. radii
         src = point_source((0.0, 0.0), z_object=-100.0, n_samples=32)
         traced, _ = _trace_surfaces(emit(src, s), s.structure, s.params, be)
-        from trace_light.optimize import _spot_variance
+        from optisketch.optimize import _spot_variance
 
         at = _propagate_to_plane(traced, float(s.image_z), be)
         return _spot_variance(at, be)

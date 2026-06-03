@@ -7,7 +7,7 @@ git_versioning: true
 github_username: kevinyamauchi
 minimum_python: 11
 mode: customize
-module_name: trace_light
+module_name: optisketch
 project_license: BSD-3-Clause
 project_name: trace-light
 project_short_description: a light raytracing library

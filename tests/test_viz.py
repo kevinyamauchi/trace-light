@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from trace_light.sources import point_source
-from trace_light.systems import four_f
-from trace_light.viz import layout
+from optisketch.sources import point_source
+from optisketch.systems import four_f
+from optisketch.viz import layout
 
 
 def test_layout_2d_returns_figure(backend):

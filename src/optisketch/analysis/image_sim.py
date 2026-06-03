@@ -23,10 +23,10 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from trace_light.analysis.psf import psf as _psf
+from optisketch.analysis.psf import psf as _psf
 
 if TYPE_CHECKING:
-    from trace_light.rays import System
+    from optisketch.rays import System
 
 
 def _axis_hats(n: int, g: int) -> tuple[np.ndarray, np.ndarray]:

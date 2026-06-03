@@ -10,7 +10,7 @@ import math
 
 import numpy as np
 
-from trace_light.lenses import (
+from optisketch.lenses import (
     aperture,
     biconvex,
     doublet,
