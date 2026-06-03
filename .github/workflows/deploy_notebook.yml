@@ -1,0 +1,49 @@
+name: Deploy interactive notebook
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - examples/4f_interactive.py
+      - .github/workflows/deploy_notebook.yml
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Export WASM notebook
+        run: |
+          mkdir -p _site
+          touch _site/.nojekyll
+          uvx marimo export html-wasm examples/4f_interactive.py \
+            --sandbox --mode run --no-show-code \
+            -o _site/index.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

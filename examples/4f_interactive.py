@@ -1,3 +1,9 @@
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "marimo>=0.23.8",
+# ]
+# ///
 """Interactive demonstration of interactive raytracing.
 
 This is a marimo notebook that can be rendered to HTML + WASM.
@@ -32,14 +38,25 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _():
-    import anywidget
+async def _():
+    import sys
+
     import marimo as mo
     import matplotlib.cm as cm
     import matplotlib.pyplot as plt
     import numpy as np
     import traitlets
     from matplotlib.patches import Rectangle
+
+    if sys.platform == "emscripten":
+        import micropip
+
+        # anywidget and optisketch are not in Pyodide; install before importing.
+        # deps=False: numpy/scipy/matplotlib are already provided by Pyodide.
+        await micropip.install("anywidget")
+        await micropip.install("optisketch", deps=False)
+
+    import anywidget
 
     from optisketch.analysis.spot import spot as compute_spot
     from optisketch.kernels import _propagate_to_plane as propagate_to_plane
@@ -109,15 +126,8 @@ def _(
     M_vals = be.to_numpy(rays_init.M)
     M_max = float(np.abs(M_vals).max())
 
-    # Find best-focus z to use as slider default
-    z_scan = np.linspace(z_thin - 20.0, z_thin + 20.0, 201)
-    rms_vals = np.array(
-        [
-            compute_spot(propagate_to_plane(final_rays, float(z), be), backend=be).rms
-            for z in z_scan
-        ]
-    )
-    z_best = float(z_scan[np.argmin(rms_vals)])
+    # Start slider at the thin-lens prediction; user explores to find true best focus
+    z_best = float(z_thin)
 
     # Static: propagate to z_thin once
     rays_at_thin = propagate_to_plane(final_rays, float(z_thin), be)
@@ -273,7 +283,7 @@ def _(
     )[np.newaxis]
     paths = np.concatenate([source_pts, pts, final_pts], axis=0)
 
-    cmap = cm.berlin
+    cmap = cm.RdBu_r
     colors = cmap(0.5 + M_vals / (2.0 * M_max))
 
     # y-extent of z_thin spot — reference lines drawn on both spot panels
