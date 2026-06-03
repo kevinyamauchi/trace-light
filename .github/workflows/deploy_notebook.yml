@@ -26,7 +26,7 @@ jobs:
           mkdir -p _site
           touch _site/.nojekyll
           uvx marimo export html-wasm examples/4f_interactive.py \
-            --sandbox --mode run --no-show-code \
+            --sandbox --mode edit \
             -o _site/index.html
 
       - name: Upload Pages artifact
