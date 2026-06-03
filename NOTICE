@@ -1,0 +1,28 @@
+trace-light
+Copyright (c) 2023 Kevin Yamauchi
+
+This product includes software derived from Optiland
+(https://github.com/optiland/optiland), copyright (c) 2024 Kramer Harrison,
+licensed under the MIT License. See licenses/optiland_license.txt for the
+full license text.
+
+This library is heavily inspired by Optiland and uses some of its source
+code and architecture.
+
+Derived source code:
+  src/trace_light/kernels.py is derived from:
+    optiland/geometries/standard.py  (StandardGeometry.distance,
+                                      StandardGeometry.surface_normal)
+    optiland/geometries/plane.py     (Plane.distance, Plane.surface_normal)
+    optiland/rays/real_rays.py       (RealRays.refract, RealRays.reflect)
+
+  The hexapolar pupil sampling in src/trace_light/sources.py is derived from:
+    optiland/distribution.py         (HexagonalDistribution)
+
+Testing infrastructure:
+  The structure and conventions of the test suite are derived from Optiland's
+  test infrastructure at https://github.com/optiland/optiland/tree/master/tests.
+
+Architecture:
+  The overall architecture and design of this library are heavily inspired by
+  Optiland.

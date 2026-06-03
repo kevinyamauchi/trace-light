@@ -8,6 +8,10 @@
 
 a light raytracing library
 
+> This library is heavily inspired by and in part derived from
+> [Optiland](https://github.com/optiland/optiland) (MIT License).
+> See [NOTICE](NOTICE) for details.
+
 ## Development
 
 The easiest way to get started is to use the [github cli](https://cli.github.com)
