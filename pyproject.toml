@@ -31,21 +31,19 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
     "Typing :: Typed",
 ]
 # add your package dependencies here
 dependencies = [
-    "anywidget>=0.11.0",
-    "marimo>=0.23.8",
-    "matplotlib>=3.10.9",
-    "numpy>=2.4.6",
-    "scipy>=1.17.1",
+    "matplotlib>=3.9.2",
+    "numpy>=2.1",
+    "scipy>=1.14.1",
 ]
 
 # https://peps.python.org/pep-0621/#dependencies-optional-dependencies
 [project.optional-dependencies]
 jax = ["jax>=0.4.0", "jaxlib>=0.4.0"]
+notebook = ["anywidget>=0.11.0", "marimo>=0.23.8"]
 
 [project.urls]
 homepage = "https://github.com/kevinyamauchi/optisketch"
