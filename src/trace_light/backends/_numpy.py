@@ -553,6 +553,71 @@ class NumpyBackend(Backend):
         )
 
     # ------------------------------------------------------------------
+    # Histogramming and convolution
+    # ------------------------------------------------------------------
+
+    def histogram2d(
+        self,
+        x: np.ndarray,
+        y: np.ndarray,
+        bins: tuple[int, int],
+        range: tuple[tuple[float, float], tuple[float, float]],
+        weights: np.ndarray | None = None,
+    ) -> np.ndarray:
+        """Return the 2-D weighted histogram counts via ``numpy.histogram2d``.
+
+        Parameters
+        ----------
+        x : numpy.ndarray
+            First-coordinate sample values (binned along axis 0).
+        y : numpy.ndarray
+            Second-coordinate sample values (binned along axis 1).
+        bins : tuple of int
+            ``(nx, ny)`` bin counts.
+        range : tuple of tuple of float
+            ``((xmin, xmax), (ymin, ymax))`` histogram extent.
+        weights : numpy.ndarray, optional
+            Per-sample weights. None → unit weights.
+
+        Returns
+        -------
+        numpy.ndarray
+            2-D histogram counts of shape *bins*.
+        """
+        w = None if weights is None else np.asarray(weights)
+        h, _, _ = np.histogram2d(
+            np.asarray(x),
+            np.asarray(y),
+            bins=bins,
+            range=range,
+            weights=w,
+        )
+        return h
+
+    def fftconvolve(
+        self, a: np.ndarray, b: np.ndarray, mode: str = "same"
+    ) -> np.ndarray:
+        """FFT-based convolution via ``scipy.signal.fftconvolve``.
+
+        Parameters
+        ----------
+        a : numpy.ndarray
+            First input array.
+        b : numpy.ndarray
+            Convolution kernel.
+        mode : str, optional
+            ``"full"``, ``"same"``, or ``"valid"``. Default ``"same"``.
+
+        Returns
+        -------
+        numpy.ndarray
+            Convolution of *a* and *b*.
+        """
+        from scipy.signal import fftconvolve as _fftconvolve
+
+        return _fftconvolve(np.asarray(a), np.asarray(b), mode=mode)
+
+    # ------------------------------------------------------------------
     # Conversion
     # ------------------------------------------------------------------
 

@@ -181,24 +181,24 @@ class SystemBuilder:
 
         is_plane = tuple(math.isinf(s.radius) for s in surfs)
         reflective = tuple(s.reflective for s in surfs)
-        semi_apertures = tuple(s.semi_aperture for s in surfs)
-        z_positions = tuple(s.z for s in surfs)
 
         structure = _Structure(
             n_surfaces=len(surfs),
             is_plane=is_plane,
             reflective=reflective,
-            semi_apertures=semi_apertures,
-            z=z_positions,
         )
 
-        # Build params arrays (use large finite value for plane radii placeholders)
+        # Traced params: z (spacing) and semi_aperture are traced so they are
+        # differentiable / sweepable without recompilation (DESIGN §4.2). Plane
+        # radii get a finite placeholder (unused when is_plane=True).
         radii_np = np.array([1.0 if math.isinf(s.radius) else s.radius for s in surfs])
         params = _Params(
+            z=backend.asarray(np.array([s.z for s in surfs])),
             radii=backend.asarray(radii_np),
             conics=backend.asarray(np.array([s.conic for s in surfs])),
             n1=backend.asarray(np.array([s.n1 for s in surfs])),
             n2=backend.asarray(np.array([s.n2 for s in surfs])),
+            semi_aperture=backend.asarray(np.array([s.semi_aperture for s in surfs])),
         )
 
         # Determine entrance pupil

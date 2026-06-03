@@ -50,28 +50,36 @@ class Rays(NamedTuple):
 
 
 class _Structure(NamedTuple):
-    """Static (hashable) surface parameters — used to key JAX recompilation.
+    """Static (hashable) surface *structure* — used to key JAX recompilation.
 
-    All values are plain Python scalars / tuples, never traced arrays.
+    Holds only the data that changes the *shape* of the computation: the
+    surface count and the per-surface kind flags. All values are plain Python
+    scalars / tuples, never traced arrays. Anything that could be optimized
+    (positions, radii, indices, apertures) lives in :class:`_Params` instead,
+    so it is differentiable and sweepable without recompilation (DESIGN §3,
+    §4.2).
     """
 
     n_surfaces: int
-    is_plane: tuple  # bool per surface
-    reflective: tuple  # bool per surface
-    semi_apertures: tuple  # float per surface; ``math.inf`` disables clipping
-    z: tuple  # absolute z position (mm) per surface
+    is_plane: tuple  # bool per surface (plane vs. conic/sphere)
+    reflective: tuple  # bool per surface (mirror vs. refractor)
 
 
 class _Params(NamedTuple):
     """Traced numerical parameters — JAX differentiates through these.
 
-    All fields are 1-D arrays of length ``n_surfaces``.
+    All fields are 1-D arrays of length ``n_surfaces``. ``z`` (axial position /
+    spacing) and ``semi_aperture`` are traced here — not in :class:`_Structure`
+    — so spacings and clear apertures are optimizable and changing them does not
+    trigger a recompile (DESIGN §4.2).
     """
 
+    z: object  # absolute axial position (mm) per surface
     radii: object  # R (ignored when is_plane=True)
     conics: object  # k
     n1: object  # refractive index before each surface
     n2: object  # refractive index after each surface
+    semi_aperture: object  # per surface; ``math.inf`` disables clipping
 
 
 # ---------------------------------------------------------------------------
@@ -182,19 +190,19 @@ class System(NamedTuple):
             "n_surfaces": self.structure.n_surfaces,
             "is_plane": list(self.structure.is_plane),
             "reflective": list(self.structure.reflective),
-            "semi_apertures": [
-                _inf_to_sentinel(v) for v in self.structure.semi_apertures
-            ],
-            "z": list(self.structure.z),
         }
         params_dict = {
+            "z": to_np(self.params.z).tolist(),
             "radii": [_inf_to_sentinel(v) for v in to_np(self.params.radii).tolist()],
             "conics": to_np(self.params.conics).tolist(),
             "n1": to_np(self.params.n1).tolist(),
             "n2": to_np(self.params.n2).tolist(),
+            "semi_aperture": [
+                _inf_to_sentinel(v) for v in to_np(self.params.semi_aperture).tolist()
+            ],
         }
         return {
-            "schema_version": 1,
+            "schema_version": 2,
             "structure": structure_dict,
             "params": params_dict,
             "pupil_z": self.pupil_z,
@@ -232,18 +240,20 @@ class System(NamedTuple):
             n_surfaces=sd["n_surfaces"],
             is_plane=tuple(sd["is_plane"]),
             reflective=tuple(sd["reflective"]),
-            semi_apertures=tuple(_sentinel_to_inf(v) for v in sd["semi_apertures"]),
-            z=tuple(sd["z"]),
         )
         import numpy as _np
 
         params = _Params(
+            z=backend.asarray(_np.array(pd["z"])),
             radii=backend.asarray(
                 _np.array([_sentinel_to_inf(v) for v in pd["radii"]])
             ),
             conics=backend.asarray(_np.array(pd["conics"])),
             n1=backend.asarray(_np.array(pd["n1"])),
             n2=backend.asarray(_np.array(pd["n2"])),
+            semi_aperture=backend.asarray(
+                _np.array([_sentinel_to_inf(v) for v in pd["semi_aperture"]])
+            ),
         )
         return cls(
             structure=structure,

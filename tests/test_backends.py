@@ -248,3 +248,59 @@ def test_import_without_jax(monkeypatch):
     import trace_light
 
     importlib.reload(trace_light)
+
+
+# ---------------------------------------------------------------------------
+# §2.3 close-out — recompilation only on structure change (Phase 7)
+# ---------------------------------------------------------------------------
+
+
+def test_recompile_only_on_structure(jax_backend):
+    """A parameter change reuses the compiled trace; a structure change retraces.
+
+    A Python counter incremented inside the traced function records each JAX
+    tracing pass. ``structure`` is passed as a static argument (it is hashable),
+    so two calls that differ only in *parameter values* trace once, while a call
+    with a different ``structure`` traces again.
+    """
+    import functools
+
+    import jax
+
+    from trace_light.kernels import _trace_surfaces
+    from trace_light.lenses import biconvex
+    from trace_light.sources import emit, point_source
+    from trace_light.systems import SystemBuilder, four_f
+
+    be = jax_backend
+
+    sys_a = four_f(f1=100.0, f2=100.0, pupil_semi=5.0, backend=be)
+    src = point_source((0.0, 0.0), z_object=-100.0, n_samples=16)
+    rays = emit(src, sys_a)
+
+    counter = {"n": 0}
+
+    @functools.partial(jax.jit, static_argnums=0)
+    def trace_fn(structure, params):
+        counter["n"] += 1  # runs once per JAX tracing pass
+        final, _ = _trace_surfaces(rays, structure, params, be)
+        return final.y
+
+    # Same structure, two different parameter sets → compiled once.
+    params_a = sys_a.params
+    params_b = params_a._replace(radii=params_a.radii * 1.01)
+    trace_fn(sys_a.structure, params_a).block_until_ready()
+    trace_fn(sys_a.structure, params_b).block_until_ready()
+    assert counter["n"] == 1, "parameter change must not trigger a recompile"
+
+    # Different structure (two surfaces instead of four) → retrace.
+    builder = SystemBuilder(wavelengths=(0.55,))
+    builder.add(*biconvex(R=100.0, n=1.5, thickness=10.0))
+    builder.gap(90.0)
+    builder.image()
+    builder._stop_z = 0.0
+    builder._stop_semi = 5.0
+    sys_c = builder.finalize(backend=be)
+
+    trace_fn(sys_c.structure, sys_c.params).block_until_ready()
+    assert counter["n"] == 2, "structure change must trigger a recompile"

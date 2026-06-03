@@ -110,14 +110,14 @@ def _singlet_setup(be):
         n_surfaces=2,
         is_plane=(False, True),
         reflective=(False, False),
-        semi_apertures=(math.inf, math.inf),
-        z=(0.0, 5.0),
     )
     params = _Params(
+        z=be.array([0.0, 5.0]),
         radii=be.array([50.0, 1.0]),  # R unused for plane
         conics=be.array([0.0, 0.0]),
         n1=be.array([1.0, 1.5]),
         n2=be.array([1.5, 1.0]),
+        semi_aperture=be.array([math.inf, math.inf]),
     )
     return structure, params
 
@@ -131,14 +131,14 @@ def _4f_setup(be):
         n_surfaces=4,
         is_plane=(False, False, False, False),
         reflective=(False, False, False, False),
-        semi_apertures=(math.inf, math.inf, math.inf, math.inf),
-        z=(0.0, 10.0, 200.0, 210.0),
     )
     params = _Params(
+        z=be.array([0.0, 10.0, 200.0, 210.0]),
         radii=be.array([100.0, -100.0, 100.0, -100.0]),
         conics=be.array([0.0, 0.0, 0.0, 0.0]),
         n1=be.array([1.0, 1.5, 1.0, 1.5]),
         n2=be.array([1.5, 1.0, 1.5, 1.0]),
+        semi_aperture=be.array([math.inf, math.inf, math.inf, math.inf]),
     )
     return structure, params
 
@@ -619,14 +619,14 @@ def test_trace_opd_flat_plate(backend):
         n_surfaces=2,
         is_plane=(True, True),
         reflective=(False, False),
-        semi_apertures=(math.inf, math.inf),
-        z=(0.0, 5.0),
     )
     params = _Params(
+        z=be.array([0.0, 5.0]),
         radii=be.array([1.0, 1.0]),
         conics=be.array([0.0, 0.0]),
         n1=be.array([1.0, 1.5]),
         n2=be.array([1.5, 1.0]),
+        semi_aperture=be.array([math.inf, math.inf]),
     )
     rays = make_rays(be, x=0.0, y=0.0, z=0.0, L=0.0, M=0.0, N=1.0)
 
@@ -703,14 +703,22 @@ def test_valid_miss_sets_invalid(backend):
         n_surfaces=1,
         is_plane=(True,),
         reflective=(False,),
-        semi_apertures=(3.0,),
-        z=(0.0,),
     )
     params = _Params(
+        z=be.array(
+            [
+                0.0,
+            ]
+        ),
         radii=be.array([1.0]),
         conics=be.array([0.0]),
         n1=be.array([1.0]),
         n2=be.array([1.0]),
+        semi_aperture=be.array(
+            [
+                3.0,
+            ]
+        ),
     )
     rays = make_rays(be, x=0.0, y=5.0, z=-10.0, N=1.0)
     final, _ = _trace_surfaces(rays, structure, params, be)
@@ -728,14 +736,14 @@ def test_valid_tir_sets_invalid(backend):
         n_surfaces=1,
         is_plane=(True,),
         reflective=(False,),
-        semi_apertures=(math.inf,),
-        z=(0.0,),
     )
     params = _Params(
+        z=be.array([0.0]),
         radii=be.array([1.0]),
         conics=be.array([0.0]),
         n1=be.array([1.5]),  # glass -> air: TIR possible
         n2=be.array([1.0]),
+        semi_aperture=be.array([math.inf]),
     )
     rays = make_rays(be, z=-5.0, M=M_in, N=N_in)
     final, _ = _trace_surfaces(rays, structure, params, be)
@@ -750,14 +758,14 @@ def test_valid_clip_sets_invalid(backend):
         n_surfaces=1,
         is_plane=(True,),
         reflective=(False,),
-        semi_apertures=(3.5,),  # r > 3.5 -> invalid
-        z=(0.0,),
     )
     params = _Params(
+        z=be.array([0.0]),
         radii=be.array([1.0]),
         conics=be.array([0.0]),
         n1=be.array([1.0]),
         n2=be.array([1.0]),
+        semi_aperture=be.array([3.5]),  # r > 3.5 -> invalid
     )
     rays = make_rays_batch(be, ys=ys, z=-5.0)
     final, _ = _trace_surfaces(rays, structure, params, be)
@@ -773,14 +781,14 @@ def test_valid_sticky(backend):
         n_surfaces=2,
         is_plane=(True, True),
         reflective=(False, False),
-        semi_apertures=(3.0, math.inf),  # only first clips
-        z=(0.0, 5.0),
     )
     params = _Params(
+        z=be.array([0.0, 5.0]),
         radii=be.array([1.0, 1.0]),
         conics=be.array([0.0, 0.0]),
         n1=be.array([1.0, 1.0]),
         n2=be.array([1.0, 1.0]),
+        semi_aperture=be.array([3.0, math.inf]),  # only first clips
     )
     rays = make_rays_batch(be, ys=[1.0, 5.0], z=-5.0)
     final, _ = _trace_surfaces(rays, structure, params, be)
@@ -796,14 +804,22 @@ def test_valid_inf_semi_disables_clip(backend):
         n_surfaces=1,
         is_plane=(True,),
         reflective=(False,),
-        semi_apertures=(math.inf,),
-        z=(0.0,),
     )
     params = _Params(
+        z=be.array(
+            [
+                0.0,
+            ]
+        ),
         radii=be.array([1.0]),
         conics=be.array([0.0]),
         n1=be.array([1.0]),
         n2=be.array([1.0]),
+        semi_aperture=be.array(
+            [
+                math.inf,
+            ]
+        ),
     )
     rays = make_rays_batch(be, ys=[100.0, 1000.0], z=-5.0)
     final, _ = _trace_surfaces(rays, structure, params, be)

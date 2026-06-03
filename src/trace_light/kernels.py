@@ -14,13 +14,14 @@ References
 
 from __future__ import annotations
 
-import math
 from typing import TYPE_CHECKING, Any
 
 from trace_light.rays import Rays, _Params, _Structure
 
 if TYPE_CHECKING:
     from trace_light.backends._protocol import Backend
+    from trace_light.rays import System
+    from trace_light.sources import Source
 
 
 # ---------------------------------------------------------------------------
@@ -354,13 +355,13 @@ def _reflect(
 
 def _surface_step(
     rays: Rays,
-    z_surf: float,
+    z_surf: Any,
     is_plane: bool,
     R: Any,
     k: Any,
     n1: Any,
     n2: Any,
-    semi: float,
+    semi: Any,
     reflective: bool,
     be: Backend,
 ) -> Rays:
@@ -381,8 +382,9 @@ def _surface_step(
     ----------
     rays : Rays
         Input ray bundle in the global coordinate frame.
-    z_surf : float
+    z_surf : float or array
         Absolute z-position of the surface vertex in the global frame (mm).
+        May be a traced scalar so spacings are differentiable.
     is_plane : bool
         When True, treat the surface as a flat plane.
     R : array or float
@@ -393,8 +395,9 @@ def _surface_step(
         Refractive index of the medium before the surface.
     n2 : array or float
         Refractive index of the medium after the surface.
-    semi : float
-        Semi-aperture radius (mm). Pass ``math.inf`` to disable clipping.
+    semi : float or array
+        Semi-aperture radius (mm), possibly traced. Pass ``math.inf`` to
+        disable clipping (``r² > inf²`` is always False).
     reflective : bool
         When True, apply reflection instead of refraction.
     be : Backend
@@ -428,12 +431,10 @@ def _surface_step(
     else:
         L, M, N, tir = _refract(rays.L, rays.M, rays.N, nx, ny, nz, n1, n2, be)
 
-    # 6. Aperture check
+    # 6. Aperture check. semi may be traced (no Python branch); an infinite
+    #    semi-aperture disables clipping because ``r² > inf²`` is always False.
     r2 = x * x + y * y
-    if math.isinf(semi):
-        outside = be.zeros_like(rays.valid)  # no clipping
-    else:
-        outside = r2 > semi * semi
+    outside = r2 > semi * semi
 
     # 7. OPD
     opd = rays.opd + n1 * t
@@ -455,6 +456,54 @@ def _surface_step(
         w=rays.w,
         opd=opd,
         valid=valid,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Free-space propagation to an arbitrary plane
+# ---------------------------------------------------------------------------
+
+
+def _propagate_to_plane(rays: Rays, z_plane: Any, be: Backend) -> Rays:
+    """Advance *rays* in free space (n=1) to the plane ``z = z_plane``.
+
+    Each ray is moved along its direction cosines until its z-coordinate
+    equals *z_plane*. Rays travelling nearly parallel to the plane (``|N|``
+    near zero) are guarded against division by zero. The ``valid`` mask is
+    preserved unchanged.
+
+    Parameters
+    ----------
+    rays : Rays
+        Input ray bundle in the global coordinate frame.
+    z_plane : float or array
+        Target plane z-position (mm). May be a traced scalar so that the
+        propagation distance is differentiable.
+    be : Backend
+        Array-computation backend.
+
+    Returns
+    -------
+    Rays
+        Ray bundle with positions advanced to *z_plane*. The ``opd`` field
+        is incremented by the geometric path length (n=1).
+    """
+    N_safe = be.where(be.abs(rays.N) > 1e-14, rays.N, be.full_like(rays.N, 1e-14))
+    t = (z_plane - rays.z) / N_safe
+    x = rays.x + t * rays.L
+    y = rays.y + t * rays.M
+    z = z_plane + be.zeros_like(rays.z)
+    return Rays(
+        x=x,
+        y=y,
+        z=z,
+        L=rays.L,
+        M=rays.M,
+        N=rays.N,
+        i=rays.i,
+        w=rays.w,
+        opd=rays.opd + t,
+        valid=rays.valid,
     )
 
 
@@ -503,16 +552,60 @@ def _trace_surfaces(
     for i in range(structure.n_surfaces):
         rays = _surface_step(
             rays,
-            z_surf=structure.z[i],
+            z_surf=params.z[i],
             is_plane=structure.is_plane[i],
             R=params.radii[i],
             k=params.conics[i],
             n1=params.n1[i],
             n2=params.n2[i],
-            semi=structure.semi_apertures[i],
+            semi=params.semi_aperture[i],
             reflective=structure.reflective[i],
             be=be,
         )
         history.append(be.stack([rays.x, rays.y, rays.z], axis=-1))
 
     return rays, history
+
+
+# ---------------------------------------------------------------------------
+# Public trace entry point (DESIGN §10)
+# ---------------------------------------------------------------------------
+
+
+def trace(
+    system: System,
+    source: Source,
+    *,
+    backend: Backend | None = None,
+) -> tuple[Rays, list[Any]]:
+    """Emit *source* into *system* and trace it through every surface.
+
+    This is the public, forward-only trace entry point of DESIGN §10. It
+    composes :func:`~trace_light.sources.emit` with :func:`_trace_surfaces`,
+    using the backend bound to *system* unless overridden.
+
+    Parameters
+    ----------
+    system : System
+        Optical system to trace through (carries its own backend).
+    source : Source
+        Ray source to emit.
+    backend : Backend, optional
+        Backend override. When given it replaces ``system.backend`` for both
+        emission and tracing; otherwise ``system.backend`` is used.
+
+    Returns
+    -------
+    final_rays : Rays
+        Ray bundle after the last surface.
+    history : list of array
+        Per-surface position history of length ``n_surfaces + 1``; each entry
+        is an ``(n_rays, 3)`` array of ``[x, y, z]`` coordinates.
+    """
+    from trace_light.sources import emit
+
+    if backend is not None:
+        system = system._replace(backend=backend)
+    be = system.backend
+    rays = emit(source, system)
+    return _trace_surfaces(rays, system.structure, system.params, be)

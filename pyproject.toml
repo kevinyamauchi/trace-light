@@ -142,3 +142,8 @@ ignore = [
 # https://github.com/crate-ci/typos/blob/master/docs/reference.md
 [tool.typos.default]
 extend-ignore-identifiers-re = []
+
+# Image-array index names (row=iy, col=ix) — not typos of "it"/"is".
+[tool.typos.default.extend-words]
+iy = "iy"
+ix = "ix"

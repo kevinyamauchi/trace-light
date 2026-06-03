@@ -98,8 +98,8 @@ def test_system_builder_absolute_z(backend):
     b.add(*biconvex(R=100.0, n=1.5, thickness=10.0))
     sys = b.image().finalize(be)
 
-    # Front surface should be at z=50, back surface at z=60
-    z_positions = sys.structure.z
+    # Front surface should be at z=50, back surface at z=60 (z is now traced)
+    z_positions = be.to_numpy(sys.params.z)
     assert_tier_d(z_positions[0], 50.0)
     assert_tier_d(z_positions[1], 60.0)
 
@@ -385,4 +385,4 @@ def test_system_schema_version_present():
     sys = four_f()
     d = sys.to_dict()
     assert "schema_version" in d
-    assert d["schema_version"] == 1
+    assert d["schema_version"] == 2

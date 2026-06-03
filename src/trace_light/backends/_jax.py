@@ -523,6 +523,68 @@ class JaxBackend(Backend):
         return self._jax.grad(f, argnums=argnums)
 
     # ------------------------------------------------------------------
+    # Histogramming and convolution
+    # ------------------------------------------------------------------
+
+    def histogram2d(
+        self,
+        x: Any,
+        y: Any,
+        bins: tuple[int, int],
+        range: tuple[tuple[float, float], tuple[float, float]],
+        weights: Any = None,
+    ) -> Any:
+        """Return the 2-D weighted histogram counts via ``jax.numpy.histogram2d``.
+
+        Parameters
+        ----------
+        x : jax.Array
+            First-coordinate sample values (binned along axis 0).
+        y : jax.Array
+            Second-coordinate sample values (binned along axis 1).
+        bins : tuple of int
+            ``(nx, ny)`` bin counts.
+        range : tuple of tuple of float
+            ``((xmin, xmax), (ymin, ymax))`` histogram extent.
+        weights : jax.Array, optional
+            Per-sample weights. None → unit weights.
+
+        Returns
+        -------
+        jax.Array
+            2-D histogram counts of shape *bins*.
+        """
+        h, _, _ = self._jnp.histogram2d(
+            x,
+            y,
+            bins=list(bins),
+            range=range,
+            weights=weights,
+        )
+        return h
+
+    def fftconvolve(self, a: Any, b: Any, mode: str = "same") -> Any:
+        """FFT-based convolution via ``jax.scipy.signal.fftconvolve``.
+
+        Parameters
+        ----------
+        a : jax.Array
+            First input array.
+        b : jax.Array
+            Convolution kernel.
+        mode : str, optional
+            ``"full"``, ``"same"``, or ``"valid"``. Default ``"same"``.
+
+        Returns
+        -------
+        jax.Array
+            Convolution of *a* and *b*.
+        """
+        from jax.scipy.signal import fftconvolve as _fftconvolve
+
+        return _fftconvolve(a, b, mode=mode)
+
+    # ------------------------------------------------------------------
     # Conversion
     # ------------------------------------------------------------------
 

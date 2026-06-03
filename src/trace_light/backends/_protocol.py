@@ -514,6 +514,66 @@ class Backend(ABC):
         """
 
     # ------------------------------------------------------------------
+    # Histogramming and convolution (analysis primitives)
+    # ------------------------------------------------------------------
+
+    @abstractmethod
+    def histogram2d(
+        self,
+        x: Any,
+        y: Any,
+        bins: tuple[int, int],
+        range: tuple[tuple[float, float], tuple[float, float]],
+        weights: Any = None,
+    ) -> Any:
+        """Return the 2-D weighted histogram of paired samples.
+
+        Semantics match :func:`numpy.histogram2d` (only the counts array is
+        returned, not the bin edges). The output is indexed ``H[i, j]`` where
+        *i* runs over the *x* binning and *j* over the *y* binning.
+
+        Parameters
+        ----------
+        x : array
+            First-coordinate sample values (binned along axis 0).
+        y : array
+            Second-coordinate sample values (binned along axis 1).
+        bins : tuple of int
+            ``(nx, ny)`` bin counts for each axis.
+        range : tuple of tuple of float
+            ``((xmin, xmax), (ymin, ymax))`` histogram extent.
+        weights : array, optional
+            Per-sample weights. When None each sample contributes 1.
+
+        Returns
+        -------
+        array
+            2-D histogram counts of shape ``bins``.
+        """
+
+    @abstractmethod
+    def fftconvolve(self, a: Any, b: Any, mode: str = "same") -> Any:
+        """FFT-based convolution of two N-D arrays.
+
+        Semantics match :func:`scipy.signal.fftconvolve`.
+
+        Parameters
+        ----------
+        a : array
+            First input array.
+        b : array
+            Second input array (the convolution kernel).
+        mode : str, optional
+            Output size mode: ``"full"``, ``"same"``, or ``"valid"``.
+            Default ``"same"``.
+
+        Returns
+        -------
+        array
+            Convolution of *a* and *b*.
+        """
+
+    # ------------------------------------------------------------------
     # Conversion
     # ------------------------------------------------------------------
 
