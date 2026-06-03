@@ -63,7 +63,7 @@ repository = "https://github.com/kevinyamauchi/trace-light"
 # https://peps.python.org/pep-0735/
 # setup with `uv sync` or `pip install -e . --group dev`
 [dependency-groups]
-test = ["pytest", "pytest-cov"]
+test = ["pytest>=9.0.3", "pytest-cov>=7.1.0"]
 dev = [
     { include-group = "test" },
     "build>=1.5.0",
